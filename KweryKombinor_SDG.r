@@ -30,14 +30,32 @@ my_data <- read.csv(file.choose()) # C:\abcd\
 head(my_data, 6)
 
 # [2] Make a local SQLite database and a connection object to it:
-con <- dbConnect(RSQLite::SQLite(), "my_local_database.db")
+con <- dbConnect(RSQLite::SQLite(), "my_local_database_2.db")
 
 
 ############## PART TWO ################
 
+# [2.1] Create a lookup dictionary for SDG IDs to their full names
+sdg.lookup <- list("40001"="1 NO POVERTY",
+                    "40002"="2 ZERO HUNGER",
+                    "40003"="3 GOOD HEALTH AND WELL BEING",
+                    "40004"="4 QUALITY EDUCATION",
+                    "40005"="5 GENDER EQUALITY",
+                    "40006"="6 CLEAN WATER AND SANITATION",
+                    "40007"="7 AFFORDABLE AND CLEAN ENERGY",
+                    "40008"="8 DECENT WORK AND ECONOMIC GROWTH",
+                    "40009"="9 INDUSTRY INNOVATION AND INFRASTRUCTURE",
+                    "40010"="10 REDUCED INEQUALITIES",
+                    "40011"="11 SUSTAINABLE CITIES AND COMMUNITIES",
+                    "40012"="12 RESPONSIBLE CONSUMPTION AND PRODUCTION",
+                    "40013"="13 CLIMATE ACTION",
+                    "40014"="14 LIFE BELOW WATER",
+                    "40015"="15 LIFE ON LAND",
+                    "40016"="16 PEACE, JUSTICE AND STRONG INSTITUTIONS")
+
 # [3] Load my API authorization 
 # token <- dsAuth(username = "", password = "")
-token <- dsAuth(key = "BC7F5884A2D445EAA189A8A2DBF3E1FB")
+token <- dsAuth(key = "")
 
 # [4] Define query for Dimensions:
 query.string <- "search publications where (year in [ 2018 : 2022 ]) and research_orgs.id = \"grid.25073.33\" and (category_sdg.name = \"1 No Poverty\") return publications[basics + extras + categories + concepts]"
@@ -57,6 +75,10 @@ Dimensions.results <- dsApiRequest(token = token, query = query.string, step = 2
 # [7] Convert the Dimensions XML list into an R data frame. This dataframe will function as the main data frame for all SDG outputs, appended consecutively.
 Dimensions.results.DF <- dsApi2dfRev(P = Dimensions.results)
 #dsApi2df(Dimensions.results)
+
+# [7.1] Correct the SDG IDs and names for SDG 1
+Dimensions.results.DF$SDG <- "1 NO POVERTY"
+Dimensions.results.DF$SDG_ID <- "40001"
 
 # [8] Append this dataframe to the list of dataframes (will contain 16 data frames by the end)
 frameslist = list(dsApi2dfRev(Dimensions.results))
@@ -78,11 +100,15 @@ for (x in 2:16)
 
   # [9.4] Store the current SDG Dimensions data in a temporary data frame
   M <- dsApi2dfRev(P = Dimensions.results) 
-
-  # [9.5] Append this data to the list of dataframes, and the master data frame.
+  
+  # [9.5] Correct the SDG IDs and names associated with the current data frame to match the SDG being queried (instead of being the first one in the list)
+  M$SDG <- toString(sdg.lookup[toString(curr_sdg)])
+  M$SDG_ID <- toString(curr_sdg)
+  
+  # [9.6] Append this data to the list of dataframes, and the master data frame.
   Dimensions.results.DF <- rbind(Dimensions.results.DF, M)
   frameslist <- c(frameslist, M) 
-  countslist <- append(counts_list, res$total_count)
+  countslist <- append(countslist, res$total_count)
  } #End of loop
 
 
@@ -94,6 +120,8 @@ temp.db <- dbConnect(RSQLite::SQLite(), ":memory:")
 
 # May need to delete old data:
 #dbExecute(temp.db, 'DROP TABLE Dimensions_Records')
+
+View(Dimensions.results.DF)
 
 # [10.2] Load dataframes into database tables:
 dbWriteTable(temp.db, "Experts_data", my_data)
