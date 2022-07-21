@@ -1,5 +1,5 @@
 # An initial script to query the Dimensions API. Modified to tackle SDG queries.
-# June 2022
+# July 2022
 # Jeff Demaine
 # Modified by Yash Bhatia
 # Following the instructions at: https://github.com/massimoaria/dimensionsR
