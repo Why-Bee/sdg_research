@@ -2,12 +2,11 @@
 # dsApi2dfRev: A function to convert JSON outputs from the dimensions API into R data frames
 # Written by: massimoaria (as part of the dimensionsR package at https://github.com/massimoaria/dimensionsR)
 # Modified by: Yash Bhatia
-# Open Access done by Jeff Demaine
-# July 2022
+# June 2022
 
 ### MAIN FUNCTION ###############################################
 
-dsApi2dfRev <- function (P, format = "bibliometrix") 
+dsApi2df_ExtendOA <- function (P, format = "bibliometrix") 
 { #P is the JSON output used in the function.
   query <- P$query
   item <- P$item
@@ -36,7 +35,7 @@ pub2dfRev <- function (P, format)
                    AB = "NA", C1 = NA, RP = NA, OI = NA, FU = NA, 
                    CR = NA, ALT = NA, TC = NA, TCR = NA, PU = NA, SN = NA, 
                    PY = NA, VL = NA, IS = NA, DI = NA, 
-                   PG = NA, SC = NA, URL = NA, DB = "DIMENSIONS", 
+                   PG = NA, SC = NA, OA = NA, OA_TYPE = NA, URL = NA, DB = "DIMENSIONS", 
                    AU_UN = NA, AU1_UN = NA, AU_CO = NA, AU1_CO = NA, SDG = NA, SDG_ID = NA, RCR = NA, 
                    stringsAsFactors = FALSE)
   
@@ -67,7 +66,8 @@ pub2dfRev <- function (P, format)
   # DI: DOI link
   # PG: Pages
   # SC: Field of Research classification
-  # OA: Open Access status
+  # OA: Open Access status [Binary value: 0 = "Closed", 1 = "Open", NA = Not specified]
+  # OA_TYPE: [Gold, Bronze, Hybrid, Green]
   # URL: Link
   # DB: Database
   # AU_UN: Affiliations of authors
@@ -150,17 +150,11 @@ pub2dfRev <- function (P, format)
       df$PU[i] <- a["publisher"]
       df$VL[i] <- a["volume"]
       df$IS[i] <- a["issue"]
+#      df$OA[i] <- a["open_access"]
+      df$OA[i] <- a["open_access"[1]]
+      df$OA_TYPE[I] <- a["open_access"[2]]
       df$SN[i] <- a["issn"]
       df$PG[i] <- a["pages"]
-      
-      #Open Access data
-      if(is.na(a["open_access"])){
-        df$OA[i] <- "Open Access"
-      }
-      else {
-        df$OA[i] <- "Closed"
-      }
-      
       #Using a regex to find reference_ids if present in the data, then pasting the same into field CR
       CR_ind <- which(regexpr("reference_ids", items) > 
                         -1)

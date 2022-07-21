@@ -34,20 +34,18 @@ con <- dbConnect(RSQLite::SQLite(), "my_local_database.db")
 
 # [3] Load my API authorization 
 # token <- dsAuth(username = "", password = "")
-token <- dsAuth(key = "")
+token <- dsAuth(key = Sys.getenv("API_KEY"))
 
 # [4] Define query for Dimensions:
 query.string <- "search publications 
   where (year in [2020]) and (type in [\"article\"]) and research_orgs.id = \"grid.25073.33\" 
-  return publications[basics + extras + categories + concepts]"
+  return publications[basics + open_access + categories + doi]"
 
 # [5] Send the query string and the token to the Dimensions API. Return zero records:
 res <- dsApiRequest(token = token, query = query.string, limit = 1, verbose = TRUE)
 
 # [5.1] Just how many records am I going to download?
 res$total_count
-
-
 
 # [6] Send the query again and retrieve 250 records at a time:
 Dimensions.results <- dsApiRequest(token = token, query = query.string, step = 250, limit = res$total_count)
