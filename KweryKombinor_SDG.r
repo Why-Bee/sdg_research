@@ -58,7 +58,7 @@ sdg.lookup <- list("40001"="1 NO POVERTY",
 token <- dsAuth(key = "")
 
 # [4] Define query for Dimensions:
-query.string <- "search publications where (year in [ 2018 : 2022 ]) and research_orgs.id = \"grid.25073.33\" and (category_sdg.name = \"1 No Poverty\") return publications[basics + extras + categories + concepts]"
+query.string <- "search publications where (year in [ 2018 : 2022 ]) and research_orgs.id = \"grid.25073.33\" and (category_sdg.name = \"1 No Poverty\") return publications[basics + extras + categories + concepts + field_citation_ratio]"
 
 # [5] Send the query string and the token to the Dimensions API. Return zero records:
 res <- dsApiRequest(token = token, query = query.string, limit = 1, verbose = TRUE)
@@ -90,7 +90,7 @@ for (x in 2:16)
   curr_sdg <- 40000 + x #Internally, the category ID for SDGs is 40000 plus the SDG number, going from 1 to 17.
 
   # [9.1] Assemble a query, this time with the SDG ID defined above
-  query.string <- paste("search publications where (year in [2018:2022]) and (research_orgs.id = \"grid.25073.33\") and (category_sdg.id = ",toString(curr_sdg),") return publications[basics + extras + categories + concepts]", sep = '')
+  query.string <- paste("search publications where (year in [2018:2022]) and (research_orgs.id = \"grid.25073.33\") and (category_sdg.id = ",toString(curr_sdg),") return publications[basics + extras + categories + concepts + field_citation_ratio]", sep = '')
 
   # [9.2] Run a query returning 0 results to understand the expected limit of the actual query (how many results)
   res <- dsApiRequest(token = token, query = query.string, limit = 0, verbose = TRUE)
