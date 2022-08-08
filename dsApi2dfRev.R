@@ -37,7 +37,7 @@ pub2dfRev <- function (P, format)
                    CR = NA, ALT = NA, TC = NA, TCR = NA, PU = NA, SN = NA, 
                    PY = NA, VL = NA, IS = NA, DI = NA, 
                    PG = NA, SC = NA, URL = NA, DB = "DIMENSIONS", 
-                   AU_UN = NA, AU1_UN = NA, AU_CO = NA, AU1_CO = NA, SDG = NA, SDG_ID = NA, RCR = NA, 
+                   AU_UN = NA, AU1_UN = NA, AU_CO = NA, AU1_CO = NA, SDG = NA, SDG_ID = NA, RCR = NA, FCR = NA, 
                    stringsAsFactors = FALSE)
   
   # df is an empty data frame, with columns initialised. 
@@ -147,6 +147,7 @@ pub2dfRev <- function (P, format)
       df$SDG[i] <- a["category_sdg.name"]
       df$SDG_ID[i] <- a['category_sdg.id']
       df$RCR[i] <- a["relative_citation_ratio"]
+      df$FCR[i] <- a["field_citation_ratio"]
       df$PU[i] <- a["publisher"]
       df$VL[i] <- a["volume"]
       df$IS[i] <- a["issue"]
