@@ -10,8 +10,8 @@ This repository contains all code relevant to the research project conducted at 
 - The reference to the research paper with more information and the conclusions of this project will be posted once the paper is published. It is currently in the editing stages.
 
 ## Primary Contributors:
-- Code Lead: Jeffrey Demaine (Information Scientist- Research Impact, McMaster University)
-- Coder: Yash Bhatia (Computer Engineering Level 2, McMaster University)
+- Data Lead: Jeffrey Demaine (Bibliometrics and Research Impact Librarian, McMaster University)
+- Code Lead: Yash Bhatia (Computer Engineering Level 2, McMaster University)
 - Non-Technical Lead: Kate Whalen (Associate Director- Academic Sustainability Programs Office, McMaster University)
 
 ## File Descriptors:
