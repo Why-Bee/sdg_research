@@ -1,7 +1,8 @@
-# An initial script to query the Dimensions API. Modified to tackle SDG queries.
+# An initial script to query the Dimensions API. Modified to tackle SDG queries
 # July 2022
 # Jeff Demaine
 # Modified by Yash Bhatia
+# Last Modified: 8th March 2022
 # Following the instructions at: https://github.com/massimoaria/dimensionsR
 # And: https://cran.r-project.org/web/packages/RSQLite/vignettes/RSQLite.html
 

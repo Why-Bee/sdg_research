@@ -2,8 +2,8 @@
 # dsApi2dfRev: A function to convert JSON outputs from the dimensions API into R data frames
 # Written by: massimoaria (as part of the dimensionsR package at https://github.com/massimoaria/dimensionsR)
 # Modified by: Yash Bhatia
-# Open Access done by Jeff Demaine
-# July 2022
+# June 2022
+# Last Modified: 8th March 2022
 
 ### MAIN FUNCTION ###############################################
 
@@ -36,8 +36,10 @@ pub2dfRev <- function (P, format)
                    AB = "NA", C1 = NA, RP = NA, OI = NA, FU = NA, 
                    CR = NA, ALT = NA, TC = NA, TCR = NA, PU = NA, SN = NA, 
                    PY = NA, VL = NA, IS = NA, DI = NA, 
-                   PG = NA, SC = NA, URL = NA, DB = "DIMENSIONS", 
-                   AU_UN = NA, AU1_UN = NA, AU_CO = NA, AU1_CO = NA, SDG = NA, SDG_ID = NA, RCR = NA, FCR = NA, 
+                   PG = NA, SC = NA, OA = NA, URL = NA, DB = "DIMENSIONS", 
+                   AU_UN = NA, AU1_UN = NA, AU_CO = NA, AU1_CO = NA, SDG = NA, SDG_ID = NA, 
+                   CAT_BRA = NA, CAT_FOR = NA, CAT_FOR_2020 = NA, CAT_FOR_2008 = NA, CAT_HRA = NA, CAT_HRCS = NA, CAT_UOA = NA
+                   RCR = NA, 
                    stringsAsFactors = FALSE)
   
   # df is an empty data frame, with columns initialised. 
@@ -76,6 +78,11 @@ pub2dfRev <- function (P, format)
   # AU1_CO: Country of first corresponding author
   # SDG: Sustainable Development Goal category
   # SDG_ID: ID of SDG category
+  # CAT_BRA: Broad Research Areas
+  # CAT_FOR_*: ANZSRC Fields of Research
+  # CAT_HRA: Health Research Areas
+  # CAT_HRCS: Health Research Classification System
+  # CAT_UOA: Units of Assessment
   # RCR: Relative Citation Ratio
   
   # For more information on the above categories please visit the Dimensions API docs at https://docs.dimensions.ai/
@@ -146,22 +153,20 @@ pub2dfRev <- function (P, format)
       df$TCR[i] <- a["recent_citations"]
       df$SDG[i] <- a["category_sdg.name"]
       df$SDG_ID[i] <- a['category_sdg.id']
+      df$CAT_BRA[i] <- a['category_bra.name']
+      df$CAT_FOR[i] <- a['category_for.name']
+      df$CAT_FOR_2020[i] <- a['category_for_2020.name']
+      df$CAT_FOR_2008[i] <- a['category_for_2008.name']
+      df$CAT_HRA[i] <- a['category_hra.name']
+      df$CAT_HRCS[i] <- a['category_hrcs.name']
+      df$CAT_UOA[i] <- a['category_uoa.name']
       df$RCR[i] <- a["relative_citation_ratio"]
-      df$FCR[i] <- a["field_citation_ratio"]
       df$PU[i] <- a["publisher"]
       df$VL[i] <- a["volume"]
       df$IS[i] <- a["issue"]
+      df$OA[i] <- a["open_access"]
       df$SN[i] <- a["issn"]
       df$PG[i] <- a["pages"]
-      
-      #Open Access data
-      if(is.na(a["open_access"])){
-        df$OA[i] <- "Open Access"
-      }
-      else {
-        df$OA[i] <- "Closed"
-      }
-      
       #Using a regex to find reference_ids if present in the data, then pasting the same into field CR
       CR_ind <- which(regexpr("reference_ids", items) > 
                         -1)
@@ -253,3 +258,4 @@ list2char <- function (x, use.names = TRUE, classes = "ANY")
   Ch <- unlist(Ch)
   return(Ch)
 }
+
